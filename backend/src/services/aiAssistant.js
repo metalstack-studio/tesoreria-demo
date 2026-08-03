@@ -10,11 +10,16 @@ import OpenAI from 'openai';
 import { query } from '../db.js';
 import { config } from '../config.js';
 
-// Cliente de OpenAI. La API key sale del entorno (backend/.env),
-// NUNCA hardcodeada en el código.
-const client = new OpenAI({ apiKey: config.openaiApiKey });
+// Cliente compatible con OpenAI. Le pasamos apiKey Y baseURL EXPLÍCITOS
+// desde nuestra config (backend/.env). Al ser explícito, el SDK no toma
+// silenciosamente ninguna variable global del shell: comportamiento
+// predecible sin importar desde qué terminal arranquemos el server.
+const client = new OpenAI({
+  apiKey: config.llm.apiKey,
+  baseURL: config.llm.baseURL,
+});
 
-const MODEL = 'gpt-4o-mini';
+const MODEL = config.llm.model;
 
 // ------------------------------------------------------------
 //  1) RETRIEVAL: traemos los datos reales del usuario desde la DB

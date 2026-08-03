@@ -21,10 +21,10 @@ chatRouter.post('/', async (req, res, next) => {
       return res.status(400).json({ error: 'La pregunta es demasiado larga (máx 500 caracteres)' });
     }
 
-    // --- Chequeo de configuración: ¿hay API key real? ---
-    if (!config.openaiApiKey || config.openaiApiKey.startsWith('sk-pendiente')) {
+    // --- Chequeo de configuración: ¿hay API key del LLM? ---
+    if (!config.llm.apiKey) {
       return res.status(503).json({
-        error: 'El asistente no está configurado: falta OPENAI_API_KEY en backend/.env',
+        error: 'El asistente no está configurado: falta LLM_API_KEY en backend/.env',
       });
     }
 

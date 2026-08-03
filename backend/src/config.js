@@ -11,7 +11,19 @@ export const config = {
   databaseUrl: process.env.DATABASE_URL,
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
-  openaiApiKey: process.env.OPENAI_API_KEY, // se usa en la Fase 3
+
+  // --- Config del proveedor de IA (Fase 3) ---
+  // Usamos nombres PROPIOS (LLM_*) a propósito, para que NINGUNA
+  // variable global del shell (como OPENAI_API_KEY / OPENAI_BASE_URL,
+  // que podés tener exportadas para otras herramientas) nos "secuestre"
+  // la config. El proyecto es dueño de su propia configuración.
+  llm: {
+    apiKey: process.env.LLM_API_KEY,
+    // baseURL define el PROVEEDOR. Al ser API compatible con OpenAI,
+    // el mismo SDK sirve para OpenAI, OpenRouter, Groq, etc.
+    baseURL: process.env.LLM_BASE_URL || 'https://api.openai.com/v1',
+    model: process.env.LLM_MODEL || 'gpt-4o-mini',
+  },
 };
 
 // "Fail fast": si falta una variable esencial, cortamos el arranque

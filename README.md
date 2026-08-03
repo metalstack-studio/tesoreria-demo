@@ -109,8 +109,21 @@ Recibe `{ "message": "..." }` y devuelve `{ "answer": "..." }`. El flujo:
 3. **Generation** — llama a `gpt-4o-mini` con un *system prompt* que le prohíbe
    inventar datos (`temperature: 0.2` para respuestas factuales).
 
-> Requiere `OPENAI_API_KEY`. Node la toma de `backend/.env`, salvo que ya exista
-> exportada en el entorno del shell (en ese caso, la del shell tiene prioridad).
+**Proveedor de IA (configurable).** El backend usa variables propias `LLM_*`
+en `backend/.env`, así ninguna variable global del shell (`OPENAI_API_KEY`,
+`OPENAI_BASE_URL`) interfiere. Como la API es compatible con OpenAI, cambiás de
+proveedor con solo editar el `.env`:
+
+```bash
+# OpenRouter (agregador multi-modelo)
+LLM_API_KEY=sk-or-v1-...
+LLM_BASE_URL=https://openrouter.ai/api/v1
+LLM_MODEL=openai/gpt-4o-mini
+
+# OpenAI directo
+# LLM_BASE_URL=https://api.openai.com/v1
+# LLM_MODEL=gpt-4o-mini
+```
 
 ### Ejemplo rápido (curl)
 
