@@ -1,0 +1,24 @@
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Variables de entorno (secretos) — NUNCA subir
+.env
+**/.env
+!.env.example
+
+# Builds
+dist/
+build/
+frontend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store
+
+# Editor
+.vscode/
+.idea/

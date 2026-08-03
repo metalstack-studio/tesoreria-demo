@@ -1,0 +1,36 @@
+# ============================================================
+#  docker-compose · Infraestructura local
+# ============================================================
+#  Fase 1: solo la base de datos PostgreSQL.
+#  (En una fase futura podríamos agregar aquí el backend.)
+# ============================================================
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: tesoreria_db
+    restart: unless-stopped
+    environment:
+      # Estas variables las lee la imagen de Postgres para
+      # crear el usuario y la base la primera vez.
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # host:contenedor  -> usamos 5433 en el host porque tu 5432 está ocupado.
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      # 1) Persistencia: los datos sobreviven a "docker compose down".
+      - pgdata:/var/lib/postgresql/data
+      # 2) Auto-init: Postgres ejecuta *.sql de esta carpeta SOLO la
+      #    primera vez (cuando el volumen pgdata está vacío).
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # Permite saber cuándo la base está realmente lista para aceptar conexiones.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
