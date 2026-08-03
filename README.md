@@ -95,8 +95,22 @@ Queda escuchando en `http://localhost:4000`.
 | POST   | `/api/auth/login`         | No        | Login, devuelve `{ user, token }`         |
 | GET    | `/api/accounts`           | Sí (JWT)  | Lista las cuentas del usuario             |
 | GET    | `/api/transactions`       | Sí (JWT)  | Lista movimientos (`?account_id=`, `?limit=`) |
+| POST   | `/api/chat`               | Sí (JWT)  | Pregunta en lenguaje natural → respuesta de IA |
 
 Las rutas protegidas requieren la cabecera `Authorization: Bearer <token>`.
+
+### El chatbot (`/api/chat`) — patrón RAG
+
+Recibe `{ "message": "..." }` y devuelve `{ "answer": "..." }`. El flujo:
+
+1. **Retrieval** — consulta en Postgres las cuentas, los totales por moneda
+   (`SUM` calculado en SQL) y los últimos movimientos del usuario del token.
+2. **Augment** — arma ese contexto en texto y lo inyecta en el prompt.
+3. **Generation** — llama a `gpt-4o-mini` con un *system prompt* que le prohíbe
+   inventar datos (`temperature: 0.2` para respuestas factuales).
+
+> Requiere `OPENAI_API_KEY`. Node la toma de `backend/.env`, salvo que ya exista
+> exportada en el entorno del shell (en ese caso, la del shell tiene prioridad).
 
 ### Ejemplo rápido (curl)
 
@@ -115,6 +129,6 @@ curl http://localhost:4000/api/accounts -H "Authorization: Bearer $TOKEN"
 
 - [x] **Fase 1** — Estructura, Docker + PostgreSQL, schema y seed.
 - [x] **Fase 2** — Backend Express con API REST y autenticación JWT.
-- [ ] **Fase 3** — Integración del chatbot con OpenAI en `/chat`.
+- [x] **Fase 3** — Integración del chatbot con OpenAI en `/chat`.
 - [ ] **Fase 4** — Frontend React (login + interfaz de chat).
 - [ ] **Fase 5** — CI con GitHub Actions.
