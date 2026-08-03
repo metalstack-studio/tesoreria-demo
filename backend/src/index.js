@@ -10,6 +10,7 @@ import { authRequired } from './middleware/auth.js';
 import { authRouter } from './routes/auth.js';
 import { accountsRouter } from './routes/accounts.js';
 import { transactionsRouter } from './routes/transactions.js';
+import { chatRouter } from './routes/chat.js';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/auth', authRouter);
 // de ahí exija un JWT válido. Si falta o es inválido, ni llega al router.
 app.use('/api/accounts', authRequired, accountsRouter);
 app.use('/api/transactions', authRequired, transactionsRouter);
+app.use('/api/chat', authRequired, chatRouter);
 
 // --- 404: ninguna ruta coincidió ---
 app.use((req, res) => {
