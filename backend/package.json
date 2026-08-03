@@ -1,0 +1,20 @@
+{
+  "name": "tesoreria-backend",
+  "version": "1.0.0",
+  "description": "API REST del Asistente de Tesorería (Express + JWT + PostgreSQL)",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node --watch --env-file=.env src/index.js",
+    "start": "node --env-file=.env src/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1"
+  }
+}

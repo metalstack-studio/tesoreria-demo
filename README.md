@@ -73,10 +73,48 @@ docker compose down         # apagar (conserva los datos)
 docker compose down -v      # apagar y BORRAR los datos (re-ejecuta el seed al volver a levantar)
 ```
 
+## Backend (API REST)
+
+### Levantarlo
+
+```bash
+cd backend
+cp .env.example .env      # la primera vez; editá los valores
+npm install               # la primera vez
+npm run dev               # arranca con recarga automática (node --watch)
+```
+
+Queda escuchando en `http://localhost:4000`.
+
+### Endpoints
+
+| Método | Ruta                      | Protegido | Qué hace                                  |
+|--------|---------------------------|-----------|-------------------------------------------|
+| GET    | `/api/health`             | No        | Chequeo de vida del servicio              |
+| POST   | `/api/auth/register`      | No        | Crea usuario, devuelve `{ user, token }`  |
+| POST   | `/api/auth/login`         | No        | Login, devuelve `{ user, token }`         |
+| GET    | `/api/accounts`           | Sí (JWT)  | Lista las cuentas del usuario             |
+| GET    | `/api/transactions`       | Sí (JWT)  | Lista movimientos (`?account_id=`, `?limit=`) |
+
+Las rutas protegidas requieren la cabecera `Authorization: Bearer <token>`.
+
+### Ejemplo rápido (curl)
+
+```bash
+# Login → guarda el token
+TOKEN=$(curl -s -X POST http://localhost:4000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"demo@tesoreria.com","password":"demo1234"}' \
+  | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>console.log(JSON.parse(d).token))")
+
+# Usar el token
+curl http://localhost:4000/api/accounts -H "Authorization: Bearer $TOKEN"
+```
+
 ## Estado del proyecto (por fases)
 
 - [x] **Fase 1** — Estructura, Docker + PostgreSQL, schema y seed.
-- [ ] **Fase 2** — Backend Express con API REST y autenticación JWT.
+- [x] **Fase 2** — Backend Express con API REST y autenticación JWT.
 - [ ] **Fase 3** — Integración del chatbot con OpenAI en `/chat`.
 - [ ] **Fase 4** — Frontend React (login + interfaz de chat).
 - [ ] **Fase 5** — CI con GitHub Actions.
