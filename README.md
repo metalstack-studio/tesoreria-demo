@@ -138,10 +138,33 @@ TOKEN=$(curl -s -X POST http://localhost:4000/api/auth/login \
 curl http://localhost:4000/api/accounts -H "Authorization: Bearer $TOKEN"
 ```
 
+## Frontend (React + Vite)
+
+### Levantarlo
+
+```bash
+cd frontend
+cp .env.example .env      # la primera vez
+npm install               # la primera vez
+npm run dev               # arranca en http://localhost:5199
+```
+
+Necesita el **backend corriendo** (puerto 4000) y la **base** levantada.
+Login demo: `demo@tesoreria.com` / `demo1234`.
+
+### Qué incluye
+
+- **Login** — formulario que guarda el JWT en `localStorage`.
+- **Vista de cuentas** — tarjetas con saldos por moneda (`GET /api/accounts`).
+- **Chat** — interfaz de conversación con el asistente (`POST /api/chat`).
+
+Todos los pedidos al backend pasan por `src/api.js`, que adjunta el JWT en el
+header `Authorization` automáticamente. La URL del backend sale de `VITE_API_URL`.
+
 ## Estado del proyecto (por fases)
 
 - [x] **Fase 1** — Estructura, Docker + PostgreSQL, schema y seed.
 - [x] **Fase 2** — Backend Express con API REST y autenticación JWT.
 - [x] **Fase 3** — Integración del chatbot con OpenAI en `/chat`.
-- [ ] **Fase 4** — Frontend React (login + interfaz de chat).
+- [x] **Fase 4** — Frontend React (login + interfaz de chat).
 - [ ] **Fase 5** — CI con GitHub Actions.
