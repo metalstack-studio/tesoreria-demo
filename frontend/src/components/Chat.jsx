@@ -30,14 +30,21 @@ export default function Chat() {
     const pregunta = text.trim();
     if (!pregunta || loading) return;
 
+    // El historial que le mandamos al backend = la conversación hasta ahora,
+    // sin los mensajes de error. Esto le da MEMORIA al asistente.
+    const history = messages
+      .filter((m) => !m.isError)
+      .map((m) => ({ role: m.role, text: m.text }));
+
     // 1) Mostramos enseguida el mensaje del usuario.
     setMessages((prev) => [...prev, { role: 'user', text: pregunta }]);
     setInput('');
     setLoading(true);
 
     try {
-      // 2) Llamamos al backend (que consulta la DB + OpenRouter).
-      const data = await api.chat(pregunta);
+      // 2) Llamamos al backend (que consulta la DB + OpenRouter),
+      //    pasándole el historial para que "recuerde" la charla.
+      const data = await api.chat(pregunta, history);
       // 3) Agregamos la respuesta del asistente.
       setMessages((prev) => [...prev, { role: 'assistant', text: data.answer }]);
     } catch (err) {

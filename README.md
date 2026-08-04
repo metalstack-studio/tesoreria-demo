@@ -101,13 +101,20 @@ Las rutas protegidas requieren la cabecera `Authorization: Bearer <token>`.
 
 ### El chatbot (`/api/chat`) — patrón RAG
 
-Recibe `{ "message": "..." }` y devuelve `{ "answer": "..." }`. El flujo:
+Recibe `{ "message": "...", "history": [...] }` y devuelve `{ "answer": "..." }`. El flujo:
 
 1. **Retrieval** — consulta en Postgres las cuentas, los totales por moneda
-   (`SUM` calculado en SQL) y los últimos movimientos del usuario del token.
-2. **Augment** — arma ese contexto en texto y lo inyecta en el prompt.
+   (`SUM` en SQL), los últimos movimientos y las **tasas de cambio** del usuario.
+2. **Augment** — arma ese contexto en texto y lo inyecta en el prompt (system).
 3. **Generation** — llama a `gpt-4o-mini` con un *system prompt* que le prohíbe
    inventar datos (`temperature: 0.2` para respuestas factuales).
+
+**Memoria conversacional.** El frontend reenvía los mensajes previos (`history`)
+en cada pedido; el backend acota a los últimos 10 turnos. Así el asistente
+"recuerda" la charla (los LLM no tienen memoria propia entre pedidos).
+
+**Conversión de monedas.** El asistente convierte usando **solo** la tabla
+`exchange_rates` (fuente auditable), nunca tasas inventadas o dadas por chat.
 
 **Proveedor de IA (configurable).** El backend usa variables propias `LLM_*`
 en `backend/.env`, así ninguna variable global del shell (`OPENAI_API_KEY`,

@@ -11,7 +11,7 @@ export const chatRouter = Router();
 // POST /api/chat   body: { message: "¿cuál es mi saldo en dólares?" }
 chatRouter.post('/', async (req, res, next) => {
   try {
-    const { message } = req.body || {};
+    const { message, history } = req.body || {};
 
     // --- Validación de input ---
     if (!message || typeof message !== 'string' || message.trim() === '') {
@@ -29,7 +29,8 @@ chatRouter.post('/', async (req, res, next) => {
     }
 
     // req.user.id viene del token (lo puso el middleware authRequired).
-    const answer = await askAssistant(req.user.id, message.trim());
+    // history (opcional) = los mensajes previos de la conversación (la "memoria").
+    const answer = await askAssistant(req.user.id, message.trim(), history);
 
     res.json({ answer });
   } catch (err) {

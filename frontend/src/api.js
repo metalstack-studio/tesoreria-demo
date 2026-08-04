@@ -58,5 +58,6 @@ export const api = {
 
   getTransactions: (query = '') => request(`/api/transactions${query}`),
 
-  chat: (message) => request('/api/chat', { method: 'POST', body: { message } }),
+  chat: (message, history = []) =>
+    request('/api/chat', { method: 'POST', body: { message, history } }),
 };
