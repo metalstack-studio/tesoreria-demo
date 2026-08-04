@@ -1,5 +1,7 @@
 # Asistente de Tesorería (Full Stack Demo)
 
+[![CI](https://github.com/metalstack-studio/tesoreria-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/metalstack-studio/tesoreria-demo/actions/workflows/ci.yml)
+
 Aplicación de demostración para practicar el stack **Node.js + React + PostgreSQL + IA generativa**.
 
 Es un **chatbot con IA** que responde preguntas en lenguaje natural sobre cuentas y
