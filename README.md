@@ -168,10 +168,26 @@ Login demo: `demo@tesoreria.com` / `demo1234`.
 Todos los pedidos al backend pasan por `src/api.js`, que adjunta el JWT en el
 header `Authorization` automáticamente. La URL del backend sale de `VITE_API_URL`.
 
+## CI (Integración Continua)
+
+En cada `push` y cada Pull Request, GitHub Actions corre
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml), con dos jobs en paralelo:
+
+- **Backend** → `npm ci` + `npm run lint` (ESLint) + `npm test` (`node --test`).
+- **Frontend** → `npm ci` + `npm run lint` (ESLint) + `npm run build`.
+
+Podés correr lo mismo localmente:
+
+```bash
+cd backend  && npm run lint && npm test
+cd frontend && npm run lint && npm run build
+```
+
 ## Estado del proyecto (por fases)
 
 - [x] **Fase 1** — Estructura, Docker + PostgreSQL, schema y seed.
 - [x] **Fase 2** — Backend Express con API REST y autenticación JWT.
 - [x] **Fase 3** — Integración del chatbot con OpenAI en `/chat`.
 - [x] **Fase 4** — Frontend React (login + interfaz de chat).
+- [x] **Fase 5** — CI con GitHub Actions (lint + test en cada push).
 - [ ] **Fase 5** — CI con GitHub Actions.

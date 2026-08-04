@@ -9,6 +9,7 @@
 import OpenAI from 'openai';
 import { query } from '../db.js';
 import { config } from '../config.js';
+import { normalizarHistorial } from '../lib/history.js';
 
 // Cliente compatible con OpenAI. Le pasamos apiKey Y baseURL EXPLÍCITOS
 // desde nuestra config (backend/.env). Al ser explícito, el SDK no toma
@@ -129,19 +130,6 @@ REGLAS IMPORTANTES:
 // ------------------------------------------------------------
 //  3) GENERATION: llamamos al modelo con contexto + pregunta
 // ------------------------------------------------------------
-// Cuántos mensajes previos recordamos (para no gastar tokens de más).
-const MAX_HISTORY = 10;
-
-// Normaliza el historial que manda el frontend a un formato seguro:
-// solo roles válidos, texto acotado, y como mucho los últimos MAX_HISTORY.
-function normalizarHistorial(history) {
-  if (!Array.isArray(history)) return [];
-  return history
-    .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.text === 'string')
-    .slice(-MAX_HISTORY)
-    .map((m) => ({ role: m.role, content: m.text.slice(0, 2000) }));
-}
-
 export async function askAssistant(userId, message, history = []) {
   const datos = await recuperarDatos(userId);
   const contexto = armarContexto(datos);
