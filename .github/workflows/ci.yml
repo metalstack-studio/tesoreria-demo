@@ -11,7 +11,8 @@ name: CI
 
 on:
   push:
-  pull_request:
+    branches: [main]   # push directo: solo main (evita runs duplicados en ramas con PR)
+  pull_request:        # ramas de feature: corren una sola vez, vía el PR
 
 jobs:
   backend:
