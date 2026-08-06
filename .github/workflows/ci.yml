@@ -11,12 +11,14 @@ name: CI
 
 on:
   push:
-  pull_request:
+    branches: [main]   # push directo: solo main (evita runs duplicados en ramas con PR)
+  pull_request:        # ramas de feature: corren una sola vez, vía el PR
 
 jobs:
   backend:
     name: Backend (lint + test)
     runs-on: ubuntu-latest
+    timeout-minutes: 10   # si un runner se cuelga, que falle rápido y no en 6h
     defaults:
       run:
         working-directory: backend
@@ -34,6 +36,7 @@ jobs:
   frontend:
     name: Frontend (lint + build)
     runs-on: ubuntu-latest
+    timeout-minutes: 10   # tope de seguridad ante runners trabados
     defaults:
       run:
         working-directory: frontend
